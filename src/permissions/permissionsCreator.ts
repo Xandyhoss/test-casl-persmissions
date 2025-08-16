@@ -3,7 +3,7 @@ import { AbilityBuilder, createMongoAbility, PureAbility } from "@casl/ability";
 type Role = "ADMIN" | "USER";
 export interface User {
   id: number;
-  userType: "ADMIN" | "USER";
+  userType: Role;
 }
 
 type Actions = "create" | "read" | "delete";

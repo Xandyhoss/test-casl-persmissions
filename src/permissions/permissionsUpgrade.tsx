@@ -25,8 +25,8 @@ const billingSubject = z.tuple([
 /////////////////////////////////////////////////////
 
 //PROJECT PERMISSIONS---------------------------------
-const projectsTypeName = z.literal("Projects");
-const projectSchema = z.object({ authorId: z.number(), adminOrg: z.boolean() });
+const projectsTypeName = z.literal("Project");
+const projectSchema = z.object({ adminOrg: z.boolean(), authorId: z.number().optional() });
 const projectsSubject = z.tuple([
   z.union([z.literal("read"), z.literal("create"), z.literal("delete")]),
   z.union([projectsTypeName, projectSchema]),
@@ -44,7 +44,9 @@ const appAbilities = z.union([
 ]);
 type AppAbilities = z.infer<typeof appAbilities>;
 
-type AppAbility = PureAbility<AppAbilities>;
+import { ForcedSubject } from "@casl/ability";
+
+type AppAbility = PureAbility<AppAbilities | [string, ForcedSubject<string>]>;
 
 type UserPermissions = (
   user: User,
@@ -54,7 +56,7 @@ type UserPermissions = (
 const permissions: Record<Role, UserPermissions> = {
   ADMIN(user, { can }) {
     can("export", "Billing", { authorId: user.id });
-    can("create", "Projects", { adminOrg: user.adminOrg });
+    can("create", "Project", { adminOrg: user.adminOrg, authorId: user.id });
   },
   USER(user, { can }) {
     can("export", "Billing", { authorId: user.id });

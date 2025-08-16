@@ -5,9 +5,9 @@ import {
 
 function App() {
   const userPermissions = getUserPermissionsUpdate({
-    id: 5,
-    userType: "USER",
-    adminOrg: false,
+    id: 9,
+    userType: "ADMIN",
+    adminOrg: true,
   });
 
   return (
@@ -22,7 +22,12 @@ function App() {
     >
       <div>
         Can create projects:{" "}
-        {userPermissions.can("create", "Projects") ? "True" : "False"}
+        {userPermissions.can(
+          "create",
+          getSubject("Project", { adminOrg: true, authorId: 9 })
+        )
+          ? "True"
+          : "False"}
       </div>
       <div>
         Can export billing:{" "}
